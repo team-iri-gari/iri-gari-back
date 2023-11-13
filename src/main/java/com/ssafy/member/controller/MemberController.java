@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.member.model.MemberDto;
 import com.ssafy.member.model.service.MemberService;
+import com.ssafy.util.JwtUtil;
 
 @CrossOrigin("*")
 @RestController
@@ -21,10 +22,12 @@ import com.ssafy.member.model.service.MemberService;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final JwtUtil jwtUtil;
 
-	public MemberController(MemberService memberService) {
+	public MemberController(MemberService memberService, JwtUtil jwtUtil) {
 		super();
 		this.memberService = memberService;
+		this.jwtUtil = jwtUtil;
 	}
 
 	@PostMapping
@@ -35,14 +38,14 @@ public class MemberController {
 	}
 	
 	@PostMapping("/{id}")
-	public ResponseEntity<String> loginMember(@PathVariable String id, @RequestBody MemberDto member) {
+	public String loginMember(@PathVariable String id, @RequestBody MemberDto member) {
 		member.setId(id);
 		MemberDto result = memberService.loginMember(member);
 		
 		if(result == null)
-			return ResponseEntity.ok("no");
+			return null;
 		else
-			return ResponseEntity.ok("ok");
+	        return jwtUtil.createToken(member.getName());
 	}
 
 	@GetMapping("/{id}")
