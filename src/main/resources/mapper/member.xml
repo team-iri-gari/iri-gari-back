@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.member.model.mapper.MemberMapper">
+
+	<insert id="insertMember" parameterType="com.ssafy.member.model.MemberDto">
+		INSERT INTO member (id, password, name, email)
+		VALUES (#{id}, #{password}, #{name}, #{email})
+	</insert>
+
+	<select id="selectMembers" resultType="com.ssafy.member.model.MemberDto">
+		SELECT * FROM member
+	</select>
+
+	<select id="selectMember" parameterType="string" resultType="com.ssafy.member.model.MemberDto">
+		SELECT * FROM member 
+		WHERE id = #{id}
+	</select>
+
+	<delete id="deleteMember" parameterType="string">
+		DELETE FROM member 
+		WHERE id = #{id}
+	</delete>
+
+	<update id="updateMember" parameterType="com.ssafy.member.model.MemberDto">
+		UPDATE member
+		SET id = #{id},
+		    password = #{password}, 
+		    name = #{name}, 
+		    email = #{email}
+		WHERE id = #{id}
+	</update>
+
+	<select id="selectMemberByDto" parameterType="com.ssafy.member.model.MemberDto"
+		resultType="com.ssafy.member.model.MemberDto">
+		SELECT * FROM member
+		WHERE id = #{id} AND password = #{password}
+	</select>
+
+	<select id="selectMemberById" parameterType="string"
+		resultType="com.ssafy.member.model.MemberDto">
+		SELECT * FROM member 
+		WHERE id = #{id}
+	</select>
+
+</mapper>
