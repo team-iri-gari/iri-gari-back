@@ -10,7 +10,7 @@
 	</insert>
 
 	<select id="selectMembers" resultType="com.ssafy.member.model.MemberDto">
-		SELECT * FROM member
+		SELECT * FROM members
 	</select>
 
 	<select id="selectMember" parameterType="string" resultType="com.ssafy.member.model.MemberDto">
@@ -19,7 +19,7 @@
 	</select>
 
 	<delete id="deleteMember" parameterType="string">
-		DELETE FROM members
+		DELETE FROM members 
 		WHERE id = #{id}
 	</delete>
 
@@ -40,7 +40,7 @@
 
 	<select id="selectMemberById" parameterType="string"
 		resultType="com.ssafy.member.model.MemberDto">
-		SELECT * FROM member 
+		SELECT id, name, email FROM members
 		WHERE id = #{id}
 	</select>
 
