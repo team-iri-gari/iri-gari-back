@@ -5,7 +5,7 @@
 <mapper namespace="com.ssafy.member.model.mapper.MemberMapper">
 
 	<insert id="insertMember" parameterType="com.ssafy.member.model.MemberDto">
-		INSERT INTO member (id, password, name, email)
+		INSERT INTO members (id, password, name, email)
 		VALUES (#{id}, #{password}, #{name}, #{email})
 	</insert>
 
@@ -14,17 +14,17 @@
 	</select>
 
 	<select id="selectMember" parameterType="string" resultType="com.ssafy.member.model.MemberDto">
-		SELECT * FROM member 
+		SELECT * FROM members 
 		WHERE id = #{id}
 	</select>
 
 	<delete id="deleteMember" parameterType="string">
-		DELETE FROM member 
+		DELETE FROM members
 		WHERE id = #{id}
 	</delete>
 
 	<update id="updateMember" parameterType="com.ssafy.member.model.MemberDto">
-		UPDATE member
+		UPDATE members
 		SET id = #{id},
 		    password = #{password}, 
 		    name = #{name}, 
@@ -34,7 +34,7 @@
 
 	<select id="selectMemberByDto" parameterType="com.ssafy.member.model.MemberDto"
 		resultType="com.ssafy.member.model.MemberDto">
-		SELECT * FROM member
+		SELECT * FROM members
 		WHERE id = #{id} AND password = #{password}
 	</select>
 

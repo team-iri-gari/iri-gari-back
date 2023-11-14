@@ -15,12 +15,12 @@ public class JwtUtil {
     private String secretKey = "your-secret-key";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String username) {
+    public String createToken(String userId) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-            .setSubject(username)
+            .setSubject(userId)
             .setIssuedAt(now)
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)

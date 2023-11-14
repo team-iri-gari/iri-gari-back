@@ -45,7 +45,7 @@ public class MemberController {
 		if(result == null)
 			return null;
 		else
-	        return jwtUtil.createToken(member.getName());
+	        return jwtUtil.createToken(member.getId());
 	}
 
 	@GetMapping("/{id}")
