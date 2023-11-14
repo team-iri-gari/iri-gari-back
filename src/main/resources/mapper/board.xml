@@ -2,24 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.irigari.board.model.mapper.BoardMapper">
+<mapper namespace="com.ssafy.board.model.mapper.BoardMapper">
 	<resultMap type="boardDto" id="board">
-		<result column="article_id" property="article_id"/>
+		<result column="article_id" property="articleId"/>
 		<result column="title" property="title"/>
 		<result column="img" property="img"/>
 		<result column="name" property="name"/>
-		<result column="board_type_id" property="board_type_id"/>
-		<result column="reg_date" property="reg_date"/>
+		<result column="board_type_id" property="boardTypeId"/>
+		<result column="reg_date" property="regDate"/>
 	</resultMap>
 	
 	<resultMap type="freeBoardDto" id="fb">
-		<result column="article_id" property="article_id"/>
+		<result column="article_id" property="articleId"/>
 		<result column="title" property="title"/>
 		<result column="img" property="img"/>
 		<result column="name" property="name"/>
 		<result column="content" property="content"/>
-		<result column="board_type_id" property="board_type_id"/>
-		<result column="reg_date" property="reg_date"/>
+		<result column="board_type_id" property="boardTypeId"/>
+		<result column="reg_date" property="regDate"/>
 	</resultMap>
 	
 	<select id="selectAllBoard" resultMap="board">
@@ -27,7 +27,23 @@
 		order by article_id desc
 	</select>
 	
-	<insert id="insertFreeBoard" parameterMap="fb">
-		
-	</insert>
+	<select id="selectFreeBoard" resultMap="fb">
+		select b.article_id, b.title, b.img, b.name, f.board_type_id, f.content, b.reg_date
+		from board b
+		join free_board f
+		on b.article_id = f.article_id
+		where b.board_type_id = 1
+		order by b.article_id desc;
+	</select>
+	
+	<select id="searchFreeBoard" parameterType="string" resultMap="fb">
+		select b.article_id, b.title, b.img, b.name, f.board_type_id, f.content, b.reg_date
+		from board b
+		join free_board f on b.article_id = f.article_id
+		join hash_tag ht on b.article_id = ht.article_id
+		join tags t on ht.tag_id = t.tag_id
+		where b.board_type_id = 1 and t.tag_name like concat('%', #{keyword}, '%')
+		order by b.article_id desc;
+	</select>
+	
 </mapper>

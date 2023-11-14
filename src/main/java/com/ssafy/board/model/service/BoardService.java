@@ -1,14 +1,11 @@
-package com.ssafy.board.model.mapper;
+package com.ssafy.board.model.service;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.FreeBoardDto;
 
-@Mapper
-public interface BoardMapper {
+public interface BoardService {
 	List<BoardDto> selectAllBoard();
 	List<FreeBoardDto> selectFreeBoard();
 	List<FreeBoardDto> searchFreeBoard(String keyword);

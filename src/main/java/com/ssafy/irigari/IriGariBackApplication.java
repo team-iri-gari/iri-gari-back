@@ -13,5 +13,5 @@ public class IriGariBackApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IriGariBackApplication.class, args);
 	}
-
+	
 }
