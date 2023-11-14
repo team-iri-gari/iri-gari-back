@@ -1,4 +1,4 @@
-package com.ssafy.irigari.board.model;
+package com.ssafy.board.model;
 
 import lombok.Data;
 
