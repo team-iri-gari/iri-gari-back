@@ -3,11 +3,13 @@ package com.ssafy.neighbor.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.ssafy.board.model.BoardDto;
 import com.ssafy.neighbor.model.NeighborDto;
 import com.ssafy.neighbor.model.service.NeighborService;
 
 import java.util.List;
 
+@CrossOrigin("/")
 @RestController
 @RequestMapping("/neighbor")
 public class NeighborController {
@@ -38,6 +40,13 @@ public class NeighborController {
         neighborService.requestNeighbor(requesterId, addresseeId);
         return ResponseEntity.ok("Neighbor request sent.");
     }
+    
+    // 이웃 신청 조회
+    @GetMapping("/request/{id}")
+    public ResponseEntity<List<NeighborDto>> getNeighborRequests(@PathVariable String id) {
+        List<NeighborDto> requests = neighborService.getNeighborRequests(id);
+        return ResponseEntity.ok().body(requests);
+    }
 
     // 이웃 신청 수락
     @PostMapping("/accept/{requesterId}/{addresseeId}")
@@ -51,5 +60,12 @@ public class NeighborController {
     public ResponseEntity<String> deleteNeighborRequest(@PathVariable String requesterId, @PathVariable String addresseeId) {
         neighborService.deleteNeighborRequest(requesterId, addresseeId);
         return ResponseEntity.ok("Neighbor request deleted.");
+    }
+    
+    // 이웃 최신 게시물 조회
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<List<BoardDto>> getLatestNeighborPosts(@PathVariable String id) {
+        List<BoardDto> latestPosts = neighborService.getLatestNeighborPosts(id);
+        return ResponseEntity.ok().body(latestPosts);
     }
 }
