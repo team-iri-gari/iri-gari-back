@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,11 +30,17 @@ import com.ssafy.board.model.service.BoardService;
 @RestController
 @RequestMapping("/board")
 public class BoardController {
-	private final BoardService boardService;
-	private final String UPLOAD_PATH = "/upload";
 	
-	@Autowired
-	private ServletContext servletContext;
+	@Value("${file.path}")
+	private String uploadPath;
+	
+	@Value("${file.path.upload-images}")
+	private String uploadImagePath;
+	
+	@Value("${file.path.upload-files}")
+	private String uploadFilePath;	
+
+	private final BoardService boardService;
 
 	public BoardController(BoardService boardService) {
 		this.boardService = boardService;
@@ -49,12 +56,11 @@ public class BoardController {
 		return ResponseEntity.ok().body(boardService.searchFreeBoard(keyword));
 	}
 	
-	@PostMapping("writefree")
-	public void writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files) throws Exception {
+	@PostMapping("free")
+	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files) throws Exception {
 		if (!files[0].isEmpty()) {
-			String realPath = servletContext.getRealPath(UPLOAD_PATH);
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
-			String saveFolder = realPath + File.separator + today;
+			String saveFolder = uploadPath + File.separator + today;
 			
 			File folder = new File(saveFolder);
 			if (!folder.exists())
@@ -76,6 +82,7 @@ public class BoardController {
 			fb.setFileInfos(fileInfos);
 		}
 
-		
+		boardService.insertBoard(fb);
+		return ResponseEntity.ok("OK");
 	}
 }

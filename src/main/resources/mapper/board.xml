@@ -53,28 +53,20 @@
 	</select>
 	
 	<insert id="insertBoard" parameterType="boardDto">
-		insert into board (board_type, title, name)
+		insert into board (board_type_id, title, name)
 		values (1, #{title}, #{name})
-		<selectKey resultType="int" keyProperty="articleId" order="AFTER">
-			select last_insert_id()
-		</selectKey>
-	</insert>
-	
-	<insert id="insertBoard" parameterType="boardDto">
-		insert into board (board_type, title, name)
-		values (1, #{title}, #{name})
-		<selectKey resultType="int" keyProperty="articleId" order="AFTER">
-			select last_insert_id()
-		</selectKey>
 	</insert>
 	
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
-		insert into board(article_id, board_type_id, content)
+		<selectKey resultType="int" keyProperty="articleId" order="BEFORE">
+			select last_insert_id()
+		</selectKey>
+		insert into free_board(article_id, board_type_id, content)
 		values (#{articleId}, 1, #{content})
 	</insert>
 	
 	<insert id="registFileInfo" parameterType="freeBoardDto">
-		insert into file_info (article_no, save_folder, original_file, save_file)
+		insert into file_info (article_id, save_folder, original_file, save_file)
 		values
 		<foreach collection="fileInfos" item="fileinfo" separator=" , ">
 			(#{articleId}, #{fileinfo.saveFolder}, #{fileinfo.originalFile}, #{fileinfo.saveFile})

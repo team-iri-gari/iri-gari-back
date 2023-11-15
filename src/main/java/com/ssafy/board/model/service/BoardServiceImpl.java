@@ -3,6 +3,7 @@ package com.ssafy.board.model.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.FileInfoDto;
@@ -34,6 +35,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public void insertBoard(FreeBoardDto fbDto) {
 		BoardDto board = new BoardDto();
 		board.setBoardTypeId(1);
