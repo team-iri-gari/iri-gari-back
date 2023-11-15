@@ -9,5 +9,5 @@ public class BoardDto {
 	private String img;
 	private String name;
 	private int boardTypeId;
-	private String regDate;	
+	private String regDate;
 }

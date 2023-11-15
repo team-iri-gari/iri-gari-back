@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.FileInfoDto;
 import com.ssafy.board.model.FreeBoardDto;
 import com.ssafy.board.model.mapper.BoardMapper;
 
@@ -28,13 +29,25 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public void insertFreeBoard(FreeBoardDto fbDto) {
-		
+	public List<FreeBoardDto> searchFreeBoard(String keyword) {
+		return boardMapper.searchFreeBoard(keyword);
 	}
 
 	@Override
-	public List<FreeBoardDto> searchFreeBoard(String keyword) {
-		return boardMapper.searchFreeBoard(keyword);
+	public void insertBoard(FreeBoardDto fbDto) {
+		BoardDto board = new BoardDto();
+		board.setBoardTypeId(1);
+		board.setName(fbDto.getName());
+		board.setTitle(fbDto.getTitle());
+		boardMapper.insertBoard(board);
+		boardMapper.insertFreeBoard(fbDto);
+		List<FileInfoDto> fileInfos = fbDto.getFileInfos();
+		
+		if (fileInfos != null && !fileInfos.isEmpty()) {
+			boardMapper.registFileInfo(fbDto);
+		}
+
+		
 	}
 
 }

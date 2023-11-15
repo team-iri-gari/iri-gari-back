@@ -1,14 +1,27 @@
 package com.ssafy.board.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.board.model.FileInfoDto;
 import com.ssafy.board.model.FreeBoardDto;
 import com.ssafy.board.model.service.BoardService;
 
@@ -17,6 +30,10 @@ import com.ssafy.board.model.service.BoardService;
 @RequestMapping("/board")
 public class BoardController {
 	private final BoardService boardService;
+	private final String UPLOAD_PATH = "/upload";
+	
+	@Autowired
+	private ServletContext servletContext;
 
 	public BoardController(BoardService boardService) {
 		this.boardService = boardService;
@@ -30,5 +47,35 @@ public class BoardController {
 	@GetMapping("{keyword}")
 	public ResponseEntity<List<FreeBoardDto>> searchFbList(@PathVariable String keyword) {
 		return ResponseEntity.ok().body(boardService.searchFreeBoard(keyword));
+	}
+	
+	@PostMapping("writefree")
+	public void writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files) throws Exception {
+		if (!files[0].isEmpty()) {
+			String realPath = servletContext.getRealPath(UPLOAD_PATH);
+			String today = new SimpleDateFormat("yyMMdd").format(new Date());
+			String saveFolder = realPath + File.separator + today;
+			
+			File folder = new File(saveFolder);
+			if (!folder.exists())
+				folder.mkdirs();
+			List<FileInfoDto> fileInfos = new ArrayList<FileInfoDto>();
+			for (MultipartFile mfile : files) {
+				FileInfoDto fileInfoDto = new FileInfoDto();
+				String originalFileName = mfile.getOriginalFilename();
+				if (!originalFileName.isEmpty()) {
+					String saveFileName = UUID.randomUUID().toString()
+							+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+					fileInfoDto.setSaveFolder(today);
+					fileInfoDto.setOriginalFile(originalFileName);
+					fileInfoDto.setSaveFile(saveFileName);
+					mfile.transferTo(new File(folder, saveFileName));
+				}
+				fileInfos.add(fileInfoDto);
+			}
+			fb.setFileInfos(fileInfos);
+		}
+
+		
 	}
 }

@@ -10,5 +10,6 @@ public interface BoardService {
 	List<FreeBoardDto> selectFreeBoard();
 	List<FreeBoardDto> searchFreeBoard(String keyword);
 	
-	void insertFreeBoard(FreeBoardDto fbDto);
+	void insertBoard(FreeBoardDto fbDto);
+	
 }
