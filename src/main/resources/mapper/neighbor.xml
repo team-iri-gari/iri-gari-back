@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.neighbor.model.mapper.NeighborMapper">
+
+	<resultMap type="NeighborDto" id="neighbor">
+		<result column="member_a_id" property="memberA" />
+		<result column="member_b_id" property="memberB" />
+	</resultMap>
+
+	<resultMap type="boardDto" id="board">
+		<result column="article_id" property="articleId" />
+		<result column="title" property="title" />
+		<result column="img" property="img" />
+		<result column="name" property="name" />
+		<result column="board_type_id" property="boardTypeId" />
+		<result column="reg_date" property="regDate" />
+	</resultMap>
+
+	<!-- Select neighbors for a given ID -->
+	<select id="selectNeighborsById" resultMap="neighbor">
+		SELECT member_a_id,
+		member_b_id
+		FROM neighbor
+		WHERE member_a_id = #{id}
+	</select>
+
+	<!-- Insert a neighbor relationship -->
+	<insert id="insertNeighbor">
+		INSERT INTO neighbor (member_a_id, member_b_id)
+		VALUES (#{requesterId}, #{addresseeId})
+	</insert>
+
+	<!-- Delete a neighbor relationship -->
+	<delete id="deleteNeighbor">
+		DELETE FROM neighbor
+		WHERE (member_a_id = #{id} AND
+		member_b_id = #{neighborId})
+		OR (member_a_id = #{neighborId} AND
+		member_b_id = #{id})
+	</delete>
+
+	<!-- Insert a neighbor request -->
+	<insert id="insertNeighborRequest">
+		INSERT INTO neighbor_request (member_a_id,
+		member_b_id)
+		VALUES (#{requesterId}, #{addresseeId})
+	</insert>
+
+	<select id="selectNeighborRequestsById" resultMap="neighbor">
+		SELECT
+		member_a_id, member_b_id
+		FROM neighbor_request
+		WHERE member_a_id = #{id}
+		OR member_b_id = #{id}
+	</select>
+
+	<!-- Delete a neighbor request -->
+	<delete id="deleteNeighborRequest">
+		DELETE FROM neighbor_request
+		WHERE member_a_id =
+		#{requesterId}
+		AND member_b_id = #{addresseeId}
+	</delete>
+
+	<select id="selectLatestPostsFromNeighbors" resultMap="board">
+		SELECT b.article_id, b.title, b.img, b.name, b.board_type_id, b.reg_date
+		FROM board AS b
+		WHERE b.name IN (
+			SELECT member_b_id
+			FROM neighbor
+			WHERE member_a_id = #{id}
+		)
+		ORDER BY b.reg_date DESC
+		LIMIT 10
+	</select>
+
+</mapper>

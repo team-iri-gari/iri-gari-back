@@ -10,18 +10,20 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.ssafy.member.model.MemberDto;
+
 @Component
 public class JwtUtil {
     private String secretKey = "your-secret-key";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String userId) {
+    public String createToken(MemberDto member) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-            .setSubject(userId)
             .setIssuedAt(now)
+            .claim("userInfo", member)
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
