@@ -7,8 +7,8 @@ import com.ssafy.board.model.FreeBoardDto;
 
 public interface BoardService {
 	List<BoardDto> selectAllBoard();
-	List<FreeBoardDto> selectFreeBoard();
-	List<FreeBoardDto> searchFreeBoard(String keyword);
+	List<?> selectBoardType(String type);
+	List<?> searchBoard(String type, String keyword);
 	
 	void insertBoard(FreeBoardDto fbDto);
 	

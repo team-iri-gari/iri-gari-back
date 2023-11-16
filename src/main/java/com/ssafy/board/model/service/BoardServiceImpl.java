@@ -1,5 +1,6 @@
 package com.ssafy.board.model.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,13 +26,26 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<FreeBoardDto> selectFreeBoard() {
-		return boardMapper.selectFreeBoard();
+	public List<?> selectBoardType(String type) {
+		if (type.equals("free")) {
+			return boardMapper.selectFreeBoard();			
+		} else if (type.equals("plan")) {
+			return null;
+		}
+		return null;
 	}
 
 	@Override
-	public List<FreeBoardDto> searchFreeBoard(String keyword) {
-		return boardMapper.searchFreeBoard(keyword);
+	public List<?> searchBoard(String type, String keyword) {
+		String[] words = keyword.split(" "); 
+		System.out.println(Arrays.toString(words));
+		
+		if (type.equals("free")) {
+			return boardMapper.searchFreeBoard(words);			
+		} else if (type.equals("plan")) {
+			return null;
+		}
+		return null;
 	}
 
 	@Override

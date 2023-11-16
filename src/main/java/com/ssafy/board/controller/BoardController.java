@@ -1,16 +1,12 @@
 package com.ssafy.board.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.ServletContext;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -46,17 +42,17 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 	
-	@GetMapping("free")
-	public ResponseEntity<List<FreeBoardDto>> showFbList() {
-		return ResponseEntity.ok().body(boardService.selectFreeBoard());
+	@GetMapping("{type}")
+	public ResponseEntity<List<?>> showBoardList(@PathVariable String type) {
+		return ResponseEntity.ok().body(boardService.selectBoardType(type));
 	}
 	
-	@GetMapping("{keyword}")
-	public ResponseEntity<List<FreeBoardDto>> searchFbList(@PathVariable String keyword) {
-		return ResponseEntity.ok().body(boardService.searchFreeBoard(keyword));
+	@GetMapping("search/{type}")
+	public ResponseEntity<List<?>> searchFbList(@PathVariable("type") String type, @RequestParam("keyword") String keyword) {
+		return ResponseEntity.ok().body(boardService.searchBoard(type, keyword));
 	}
 	
-	@PostMapping("free")
+	@PostMapping("write/free")
 	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files) throws Exception {
 		if (!files[0].isEmpty()) {
 			String today = new SimpleDateFormat("yyMMdd").format(new Date());
