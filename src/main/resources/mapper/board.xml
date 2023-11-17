@@ -21,6 +21,22 @@
 		<result column="board_type_id" property="boardTypeId" />
 		<result column="reg_date" property="regDate" />
 	</resultMap>
+	
+	<resultMap type="planBoardDto" id="pb">
+	<result column="article_id" property="articleId" />
+		<result column="title" property="title" />
+		<result column="img" property="img" />
+		<result column="name" property="name" />
+		<result column="plan_idx" property="planIdx"/>
+		<result column="img_src" property="imgSrc"/>
+		<result column="img_id" property="imgId"/>
+		<result column="place_name" property="placeName"/>
+		<result column="place_id" property="placeId"/>
+		<result column="date" property="date"/>
+		<result column="timeStart" property="timeStart"/>
+		<result column="timeEnd" property="timeEnd"/>
+		<result column="description" property="description"/>
+	</resultMap>
 
 	<resultMap type="fileInfoDto" id="file">
 		<result column="save_folder" property="saveFolder" />
