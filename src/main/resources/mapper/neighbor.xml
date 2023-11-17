@@ -67,14 +67,18 @@
 
 	<select id="selectLatestPostsFromNeighbors" resultMap="board">
 		SELECT b.article_id, b.title, b.img, b.name, b.board_type_id, b.reg_date
-		FROM board AS b
-		WHERE b.name IN (
-			SELECT member_b_id
-			FROM neighbor
-			WHERE member_a_id = #{id}
-		)
-		ORDER BY b.reg_date DESC
-		LIMIT 10
+        from board b
+        join free_board f 
+        on b.article_id = f.article_id
+        WHERE b.name IN (
+            SELECT name
+            FROM neighbor n 
+            join members m
+            on n.member_b_id = m.id
+            WHERE member_a_id = #{id}
+        )
+        ORDER BY b.reg_date DESC
+        LIMIT 10
 	</select>
 
 </mapper>
