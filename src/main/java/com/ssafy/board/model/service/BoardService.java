@@ -3,6 +3,7 @@ package com.ssafy.board.model.service;
 import java.util.List;
 
 import com.ssafy.board.model.BoardDto;
+import com.ssafy.board.model.FileInfoDto;
 import com.ssafy.board.model.FreeBoardDto;
 
 public interface BoardService {
@@ -11,5 +12,7 @@ public interface BoardService {
 	List<?> searchBoard(String type, String keyword);
 	
 	void insertBoard(FreeBoardDto fbDto);
+	FreeBoardDto selectBoardId(int id);
+	List<FileInfoDto> getPhotosByPostId(int id);
 	
 }

@@ -66,4 +66,14 @@ public class BoardServiceImpl implements BoardService {
 		
 	}
 
+	@Override
+	public FreeBoardDto selectBoardId(int id) {
+		return boardMapper.selectBoardId(id);
+	}
+
+	@Override
+	public List<FileInfoDto> getPhotosByPostId(int postId) {
+        return boardMapper.getPhotosByPostId(postId);
+    }
+
 }
