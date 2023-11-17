@@ -9,7 +9,7 @@ import com.ssafy.neighbor.model.service.NeighborService;
 
 import java.util.List;
 
-@CrossOrigin("/")
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/neighbor")
 public class NeighborController {
