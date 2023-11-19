@@ -23,10 +23,10 @@
 	</resultMap>
 	
 	<resultMap type="planBoardDto" id="pb">
-	<result column="article_id" property="articleId" />
+		<!-- <result column="article_id" property="articleId" />
 		<result column="title" property="title" />
 		<result column="img" property="img" />
-		<result column="name" property="name" />
+		<result column="name" property="name" /> -->
 		<result column="plan_idx" property="planIdx"/>
 		<result column="img_src" property="imgSrc"/>
 		<result column="img_id" property="imgId"/>
@@ -36,6 +36,8 @@
 		<result column="timeStart" property="timeStart"/>
 		<result column="timeEnd" property="timeEnd"/>
 		<result column="description" property="description"/>
+		<result column="board_type_id" property="boardTypeId" />
+		<result column="reg_date" property="regDate" />
 	</resultMap>
 
 	<resultMap type="fileInfoDto" id="file">
@@ -92,7 +94,7 @@
 	<insert id="insertBoard" parameterType="boardDto">
 		insert into board
 		(board_type_id, title, name)
-		values (1, #{title}, #{name})
+		values (#{boardTypeId}, #{title}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
@@ -105,7 +107,40 @@
 		(#{articleId}, 1, #{content})
 	</insert>
 
-	<insert id="registFileInfo" parameterType="freeBoardDto">
+	<insert id="insertPlanBoard" parameterType="list">
+		<selectKey resultType="int" keyProperty="articleId"
+			order="BEFORE">
+			select last_insert_id()
+		</selectKey>
+		insert into plan_board(
+		article_id, 
+		board_type_id, 
+		plan_idx, 
+		img_src, 
+		img_id, 
+		place_name, 
+		place_id, 
+		date, 
+		timeStart, 
+		timeEnd, 
+		description
+		) values 
+		<foreach collection="plist" item="plan" separator=",">
+			(#{articleId}, 
+			2, 
+			#{plan.planIdx}, 
+			#{plan.imgSrc},
+			#{plan.imgId},
+			#{plan.placeName}, 
+			#{plan.placeId},
+			#{plan.date},
+			#{plan.timeStart},
+			#{plan.timeEnd},
+			#{plan.description})
+		</foreach>
+	</insert>
+
+	<insert id="registFileInfo" parameterType="boardDto">
 		insert into file_info (article_id, save_folder, original_file,
 		save_file)
 		values

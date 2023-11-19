@@ -9,5 +9,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=true)
 public class FreeBoardDto extends BoardDto{
 	private String content;
-	private List<FileInfoDto> fileInfos;
+//	원래 여기 있던걸 board로 옮길게
+//	private List<FileInfoDto> fileInfos;
 }

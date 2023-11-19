@@ -4,11 +4,9 @@ import java.sql.Time;
 import java.sql.Date;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
-public class PlanBoardDto extends BoardDto{
+public class PlanBoardDto{
 	private int planIdx;
 	private String imgSrc;
 	private String imgId;

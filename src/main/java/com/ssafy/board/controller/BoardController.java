@@ -1,7 +1,10 @@
 package com.ssafy.board.controller;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +28,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.FileInfoDto;
+import com.ssafy.board.model.FormDto;
 import com.ssafy.board.model.FreeBoardDto;
+import com.ssafy.board.model.PlanBoardDto;
 import com.ssafy.board.model.service.BoardService;
 
 @CrossOrigin("*")
@@ -85,8 +93,19 @@ public class BoardController {
 	        }
 	        fb.setFileInfos(fileInfos);
 	    }
-	    
-	    boardService.insertBoard(fb);
+	    fb.setBoardTypeId(1);
+	    boardService.insertFreeBoard(fb);
 	    return ResponseEntity.ok("OK");
+	}
+	
+	@PostMapping(value = "write/plan", consumes = "multipart/form-data")
+	public void writePlanBoard (@ModelAttribute FormDto fdto, @RequestParam("name") String name, @RequestParam("title") String title, @RequestParam("upfile") MultipartFile[] files) throws Exception {
+		BoardDto board = new BoardDto();
+		String realName = URLDecoder.decode(name, StandardCharsets.UTF_8.toString());
+		System.out.println(realName);
+		board.setName(realName);
+		board.setTitle(title);
+		board.setBoardTypeId(2);
+		boardService.insertPlanBoard(board, fdto, files);
 	}
 }
