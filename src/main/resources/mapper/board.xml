@@ -92,26 +92,21 @@
 	</select>
 
 	<insert id="insertBoard" parameterType="boardDto">
+		<selectKey keyProperty="articleId" resultType="int" order="AFTER">
+	        SELECT LAST_INSERT_ID()
+	    </selectKey>
 		insert into board
 		(board_type_id, title, name)
 		values (#{boardTypeId}, #{title}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
-		<selectKey resultType="int" keyProperty="articleId"
-			order="BEFORE">
-			select last_insert_id()
-		</selectKey>
 		insert into free_board(article_id, board_type_id, content)
 		values
 		(#{articleId}, 1, #{content})
 	</insert>
 
-	<insert id="insertPlanBoard" parameterType="list">
-		<selectKey resultType="int" keyProperty="articleId"
-			order="BEFORE">
-			select last_insert_id()
-		</selectKey>
+	<insert id="insertPlanBoard" parameterType="map">
 		insert into plan_board(
 		article_id, 
 		board_type_id, 

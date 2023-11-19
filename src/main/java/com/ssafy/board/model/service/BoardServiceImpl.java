@@ -72,6 +72,7 @@ public class BoardServiceImpl implements BoardService {
 		board.setName(fbDto.getName());
 		board.setTitle(fbDto.getTitle());
 		boardMapper.insertBoard(board);
+		fbDto.setArticleId(board.getArticleId());
 		boardMapper.insertFreeBoard(fbDto);
 		List<FileInfoDto> fileInfos = fbDto.getFileInfos();
 		
@@ -134,7 +135,7 @@ public class BoardServiceImpl implements BoardService {
 		}
 		
 		boardMapper.insertBoard(board);
-		boardMapper.insertPlanBoard(plist);
+		boardMapper.insertPlanBoard(plist, board.getArticleId());
 		boardMapper.registFileInfo(board);
 	}
 	

@@ -19,7 +19,7 @@ public interface BoardMapper {
 	
 	void insertBoard(BoardDto bDto);
 	void insertFreeBoard(FreeBoardDto fbDto);
-	void insertPlanBoard(List<PlanBoardDto> plist);	// 여행 계획 게시물 추가
+	void insertPlanBoard(List<PlanBoardDto> plist, int articleId);	// 여행 계획 게시물 추가
 	void registFileInfo(BoardDto board);
 	
 	FreeBoardDto selectBoardId(int id);
