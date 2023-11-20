@@ -1,6 +1,7 @@
 package com.ssafy.tag.model.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.springframework.http.ResponseEntity;
 
 import com.ssafy.tag.model.HashTagDto;
 import com.ssafy.tag.model.TagDto;
@@ -23,4 +24,6 @@ public interface TagMapper {
 	void insertTag(TagDto tagDto);
 	
 	void incrementTagHits(String word);
+
+	List<TagDto> selectRecommendTags();
 }

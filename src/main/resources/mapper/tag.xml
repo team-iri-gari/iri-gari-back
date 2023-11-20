@@ -50,8 +50,18 @@
 	<update id="incrementTagHits">
 		UPDATE tags
 		SET hit = hit + 1
-		WHERE tag_name LIKE CONCAT('%', #{keyword}, '%')
+		WHERE tag_name LIKE
+		CONCAT('%', #{keyword}, '%')
 	</update>
+
+	<!-- hit 값이 1 이상인 태그들을 hit 순으로 정렬해서 반환 -->
+	<select id="selectRecommendTags" resultType="TagDto">
+		SELECT tag_id, tag_name, hit
+		FROM tags
+		WHERE hit > 1
+		ORDER BY hit DESC
+	</select>
+
 
 
 </mapper>
