@@ -44,8 +44,10 @@ public class MemberController {
 		
 		if(result == null)
 			return null;
-		else
-	        return jwtUtil.createToken(result);
+		else {
+			result.setPassword("");
+			return jwtUtil.createToken(result);
+		}
 	}
 
 	@GetMapping("/{id}")

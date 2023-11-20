@@ -21,7 +21,7 @@
 		<result column="board_type_id" property="boardTypeId" />
 		<result column="reg_date" property="regDate" />
 	</resultMap>
-	
+
 	<resultMap type="planBoardDto" id="pb">
 		<result column="article_id" property="articleId" />
 		<!-- 
@@ -37,8 +37,6 @@
 		<result column="timeStart" property="timeStart"/>
 		<result column="timeEnd" property="timeEnd"/>
 		<result column="description" property="description"/>
-		<result column="board_type_id" property="boardTypeId" />
-		<result column="reg_date" property="regDate" />
 	</resultMap>
 
 	<resultMap type="fileInfoDto" id="file">
@@ -127,7 +125,8 @@
 	    </selectKey>
 		insert into board
 		(board_type_id, title, name)
-		values (#{boardTypeId}, #{title}, #{name})
+		values (#{boardTypeId},
+		#{title}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
@@ -138,25 +137,25 @@
 
 	<insert id="insertPlanBoard" parameterType="map">
 		insert into plan_board(
-		article_id, 
-		board_type_id, 
-		plan_idx, 
-		img_src, 
-		img_id, 
-		place_name, 
-		place_id, 
-		date, 
-		timeStart, 
-		timeEnd, 
+		article_id,
+		board_type_id,
+		plan_idx,
+		img_src,
+		img_id,
+		place_name,
+		place_id,
+		date,
+		timeStart,
+		timeEnd,
 		description
-		) values 
+		) values
 		<foreach collection="plist" item="plan" separator=",">
-			(#{articleId}, 
-			2, 
-			#{plan.planIdx}, 
+			(#{articleId},
+			2,
+			#{plan.planIdx},
 			#{plan.imgSrc},
 			#{plan.imgId},
-			#{plan.placeName}, 
+			#{plan.placeName},
 			#{plan.placeId},
 			#{plan.date},
 			#{plan.timeStart},
@@ -175,9 +174,16 @@
 			#{fileinfo.originalFile}, #{fileinfo.saveFile})
 		</foreach>
 	</insert>
-	
+
 	<select id="getPhotosByPostId" resultMap="file">
-        SELECT * FROM file_info WHERE article_id = #{postId}
-    </select>
+		SELECT * FROM file_info WHERE article_id = #{postId}
+	</select>
+	
+<!-- 	<insert id="insertTags" parameterType="com.example.dto.BoardDto">
+        <foreach item="tag" collection="tagList" index="index" separator=";">
+            INSERT INTO tag (tag_id, tag_name)
+            VALUES (#{articleId}, #{tag})
+        </foreach>
+    </insert> -->
 
 </mapper>

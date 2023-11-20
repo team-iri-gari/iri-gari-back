@@ -13,4 +13,5 @@ public class BoardDto {
 	private int boardTypeId;
 	private String regDate;
 	private List<FileInfoDto> fileInfos;
+	private List<String> tagList;
 }

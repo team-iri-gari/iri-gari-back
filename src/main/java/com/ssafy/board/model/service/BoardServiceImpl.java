@@ -78,6 +78,10 @@ public class BoardServiceImpl implements BoardService {
 		if (fileInfos != null && !fileInfos.isEmpty()) {
 			boardMapper.registFileInfo(fbDto);
 		}
+		
+//		if (fbDto.getTagList() != null && !fbDto.getTagList().isEmpty()) {
+//            boardMapper.insertTags(fbDto);
+//        }
 	}
 
 	@Override
@@ -152,7 +156,4 @@ public class BoardServiceImpl implements BoardService {
 	public List<FileInfoDto> getPhotosByPostId(int postId) {
         return boardMapper.getPhotosByPostId(postId);
     }
-
-
-
 }

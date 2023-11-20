@@ -25,4 +25,6 @@ public interface BoardMapper {
 	FreeBoardDto selectFreeBoardId(int id);
 	List<PlanBoardDto> selectPlanBoardId(int id);
 	List<FileInfoDto> getPhotosByPostId(int postId);
+	
+//	void insertTags(BoardDto boardDto);
 }
