@@ -170,11 +170,11 @@
 		SELECT * FROM file_info WHERE article_id = #{postId}
 	</select>
 	
-	<insert id="insertTags" parameterType="com.example.dto.BoardDto">
+<!-- 	<insert id="insertTags" parameterType="com.example.dto.BoardDto">
         <foreach item="tag" collection="tagList" index="index" separator=";">
             INSERT INTO tag (tag_id, tag_name)
             VALUES (#{articleId}, #{tag})
         </foreach>
-    </insert>
+    </insert> -->
 
 </mapper>
