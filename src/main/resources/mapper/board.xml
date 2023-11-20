@@ -23,7 +23,8 @@
 	</resultMap>
 	
 	<resultMap type="planBoardDto" id="pb">
-		<!-- <result column="article_id" property="articleId" />
+		<result column="article_id" property="articleId" />
+		<!-- 
 		<result column="title" property="title" />
 		<result column="img" property="img" />
 		<result column="name" property="name" /> -->
@@ -52,13 +53,19 @@
 		by article_id desc
 	</select>
 
-	<select id="selectBoardId" parameterType="int" resultMap="fb">
+	<select id="selectFreeBoardId" parameterType="int" resultMap="fb">
 		select
 		* from board b
 		join free_board f
 		on b.article_id = f.article_id
 		where
 		b.article_id = #{id}
+	</select>
+	
+	<select id="selectPlanBoardId" parameterType="int" resultMap="pb">
+		select article_id, plan_idx, img_src, img_id, place_name, place_id, date, timeStart, timeEnd, description
+		from plan_board
+		where article_id = #{id}
 	</select>
 
 	<select id="selectFreeBoard" resultMap="fb">
@@ -73,6 +80,13 @@
 		order by b.article_id desc;
 	</select>
 
+	<select id="selectPlanBoard" resultMap="board">
+		select article_id, title, img, name, board_type_id, reg_date
+		from board
+		where board_type_id = 2
+		order by article_id desc;
+	</select>
+	
 	<select id="searchFreeBoard" resultMap="fb">
 		select distinct b.article_id, b.title, b.img, b.name, f.board_type_id,
 		f.content, b.reg_date
@@ -91,14 +105,12 @@
 		order by b.article_id desc;
 	</select>
 	
-	<select id="selectPlanBoard" resultMap="pb">
-		select distinct b.article_id, b.title, b.img, b.name, f.board_type_id,
-		f.content, b.reg_date
+	<select id="searchPlanBoard" resultMap="board">
+		select b.article_id, b.title, b.img, b.name, b.board_type_id, b.reg_date
 		from board b
-		join free_board f on b.article_id = f.article_id
 		join hash_tag ht on b.article_id = ht.article_id
 		join tags t on ht.tag_id = t.tag_id
-		where b.board_type_id = 1
+		where b.board_type_id = 2
 		<if test="words != null and words.length > 0">
 			and (
 			<foreach collection="words" item="keyword" separator=" OR ">

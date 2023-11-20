@@ -1,7 +1,6 @@
 package com.ssafy.board.model.service;
 
 import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,12 +42,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<?> selectBoardType(String type) {
+		// 받아오는 보드 타입 문자열에 따라 각 유형 보드 반환
 		if (type.equals("free")) {
 			return boardMapper.selectFreeBoard();			
 		} else if (type.equals("plan")) {
-			return null;
-		}
-		return null;
+			return boardMapper.selectPlanBoard();
+		} else return null;
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
 		if (type.equals("free")) {
 			return boardMapper.searchFreeBoard(words);			
 		} else if (type.equals("plan")) {
-			return null;
+			return boardMapper.searchPlanBoard(words);
 		}
 		return null;
 	}
@@ -140,14 +139,20 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public FreeBoardDto selectBoardId(int id) {
-		return boardMapper.selectBoardId(id);
+	public FreeBoardDto selectFreeBoardId(int id) {
+		return boardMapper.selectFreeBoardId(id);
 	}
 
+	@Override
+	public List<PlanBoardDto> selectPlanBoardId(int id) {
+		return boardMapper.selectPlanBoardId(id);
+	}
+	
 	@Override
 	public List<FileInfoDto> getPhotosByPostId(int postId) {
         return boardMapper.getPhotosByPostId(postId);
     }
+
 
 
 }
