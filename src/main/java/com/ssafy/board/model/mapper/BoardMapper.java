@@ -13,7 +13,7 @@ import com.ssafy.board.model.PlanBoardDto;
 public interface BoardMapper {
 	List<BoardDto> selectAllBoard();
 	List<FreeBoardDto> selectFreeBoard();
-//	List<PlanBoardDto> selectPlanBoard();	// 전체 여행계획 게시판 만들 때 보일 게시판 목록
+	List<PlanBoardDto> selectPlanBoard(int articleId);	// 전체 여행계획 게시판 만들 때 보일 게시판 목록
 	List<FreeBoardDto> searchFreeBoard(String[] words);
 //	List<PlanBoardDto> searchPlanBoard(String[] words);	// Search View에서 보일 검색 목록
 	

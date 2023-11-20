@@ -73,7 +73,25 @@
 		order by b.article_id desc;
 	</select>
 
-	<select id="searchFreeBoard" parameterType="map" resultMap="fb">
+	<select id="searchFreeBoard" resultMap="fb">
+		select distinct b.article_id, b.title, b.img, b.name, f.board_type_id,
+		f.content, b.reg_date
+		from board b
+		join free_board f on b.article_id = f.article_id
+		join hash_tag ht on b.article_id = ht.article_id
+		join tags t on ht.tag_id = t.tag_id
+		where b.board_type_id = 1
+		<if test="words != null and words.length > 0">
+			and (
+			<foreach collection="words" item="keyword" separator=" OR ">
+				t.tag_name like concat('%', #{keyword}, '%')
+			</foreach>
+			)
+		</if>
+		order by b.article_id desc;
+	</select>
+	
+	<select id="selectPlanBoard" resultMap="pb">
 		select distinct b.article_id, b.title, b.img, b.name, f.board_type_id,
 		f.content, b.reg_date
 		from board b
