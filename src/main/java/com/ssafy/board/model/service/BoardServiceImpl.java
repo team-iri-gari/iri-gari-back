@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +24,22 @@ import com.ssafy.board.model.FormDto;
 import com.ssafy.board.model.FreeBoardDto;
 import com.ssafy.board.model.PlanBoardDto;
 import com.ssafy.board.model.mapper.BoardMapper;
+import com.ssafy.tag.model.HashTagDto;
+import com.ssafy.tag.model.TagDto;
+import com.ssafy.tag.model.mapper.TagMapper;
 
 @Service
 public class BoardServiceImpl implements BoardService {
 
 	private final BoardMapper boardMapper;
-	
-	@Autowired
-	private AmazonS3 amazonS3Client;
-	
-	public BoardServiceImpl(BoardMapper boardMapper) {
+	private final TagMapper tagMapper;
+	private final AmazonS3 amazonS3Client;
+
+	public BoardServiceImpl(BoardMapper boardMapper, TagMapper tagMapper, AmazonS3 amazonS3Client) {
+		super();
 		this.boardMapper = boardMapper;
+		this.tagMapper = tagMapper;
+		this.amazonS3Client = amazonS3Client;
 	}
 
 	@Override
@@ -44,19 +51,20 @@ public class BoardServiceImpl implements BoardService {
 	public List<?> selectBoardType(String type) {
 		// 받아오는 보드 타입 문자열에 따라 각 유형 보드 반환
 		if (type.equals("free")) {
-			return boardMapper.selectFreeBoard();			
+			return boardMapper.selectFreeBoard();
 		} else if (type.equals("plan")) {
 			return boardMapper.selectPlanBoard();
-		} else return null;
+		} else
+			return null;
 	}
 
 	@Override
 	public List<?> searchBoard(String type, String keyword) {
-		String[] words = keyword.split(" "); 
+		String[] words = keyword.split(" ");
 		System.out.println(Arrays.toString(words));
-		
+
 		if (type.equals("free")) {
-			return boardMapper.searchFreeBoard(words);			
+			return boardMapper.searchFreeBoard(words);
 		} else if (type.equals("plan")) {
 			return boardMapper.searchPlanBoard(words);
 		}
@@ -74,14 +82,30 @@ public class BoardServiceImpl implements BoardService {
 		fbDto.setArticleId(board.getArticleId());
 		boardMapper.insertFreeBoard(fbDto);
 		List<FileInfoDto> fileInfos = fbDto.getFileInfos();
-		
+
 		if (fileInfos != null && !fileInfos.isEmpty()) {
 			boardMapper.registFileInfo(fbDto);
 		}
-		
-//		if (fbDto.getTagList() != null && !fbDto.getTagList().isEmpty()) {
-//            boardMapper.insertTags(fbDto);
-//        }
+
+		List<String> tagNames = fbDto.getTagList();
+
+		for (String tagName : tagNames) {
+			
+			System.out.println(tagName);
+			TagDto tag = tagMapper.selectTag(tagName);
+			
+			if(tag == null) {
+				tag = new TagDto();
+				tag.setName(tagName);
+				tagMapper.insertTag(tag);
+			}
+			
+			HashTagDto hashTagDto = new HashTagDto();
+			hashTagDto.setArticleId(board.getArticleId());
+			hashTagDto.setTagId(tag.getId());
+			
+			tagMapper.insertHashTag(hashTagDto);
+		}
 	}
 
 	@Override
@@ -91,39 +115,40 @@ public class BoardServiceImpl implements BoardService {
 		List<FileInfoDto> flist = new ArrayList<>();
 		int size = fdto.getPlaceIdx().size();
 		String today = new SimpleDateFormat("yyMMdd").format(new Date());
-        String bucketName = "iri-gari-image-server";
-        
-        
+		String bucketName = "iri-gari-image-server";
+
 		for (int i = 0; i < size; i++) {
 			// 파일 업로드
 			MultipartFile mfile = files[i];
 			FileInfoDto fileInfoDto = new FileInfoDto();
 			String originalFileName = mfile.getOriginalFilename();
 			String saveFileName = null;
-            if (originalFileName != null && !originalFileName.isEmpty()) {
-                saveFileName = UUID.randomUUID().toString() + originalFileName.substring(originalFileName.lastIndexOf('.'));
+			if (originalFileName != null && !originalFileName.isEmpty()) {
+				saveFileName = UUID.randomUUID().toString()
+						+ originalFileName.substring(originalFileName.lastIndexOf('.'));
 
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentLength(mfile.getSize());
-                amazonS3Client.putObject(new PutObjectRequest(bucketName, today + "/" + saveFileName, mfile.getInputStream(), metadata));
+				ObjectMetadata metadata = new ObjectMetadata();
+				metadata.setContentLength(mfile.getSize());
+				amazonS3Client.putObject(
+						new PutObjectRequest(bucketName, today + "/" + saveFileName, mfile.getInputStream(), metadata));
 
-                fileInfoDto.setSaveFolder(today);
-                fileInfoDto.setOriginalFile(originalFileName);
-                fileInfoDto.setSaveFile(saveFileName);
-            }
-            flist.add(fileInfoDto);
-            board.setFileInfos(flist);			
-			
+				fileInfoDto.setSaveFolder(today);
+				fileInfoDto.setOriginalFile(originalFileName);
+				fileInfoDto.setSaveFile(saveFileName);
+			}
+			flist.add(fileInfoDto);
+			board.setFileInfos(flist);
+
 			PlanBoardDto pb = new PlanBoardDto();
 			pb.setPlanIdx(i);
-			pb.setImgSrc(today);	// 해당 계획 카드의 이미지 경로 저장
-			pb.setImgId(saveFileName);	// 해당 계획 카드의 이미지 업로드 아이디 저장
+			pb.setImgSrc(today); // 해당 계획 카드의 이미지 경로 저장
+			pb.setImgId(saveFileName); // 해당 계획 카드의 이미지 업로드 아이디 저장
 			pb.setPlaceName(fdto.getPlaceName().get(i));
 			pb.setPlaceId(fdto.getPlaceId().get(i));
 			String dateStr = fdto.getDate().get(i);
 			String stimeStr = fdto.getTimeStart().get(i);
 			String etimeStr = fdto.getTimeEnd().get(i);
-			
+
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			java.sql.Date sqlDate = new java.sql.Date(formatter.parse(dateStr).getTime());
 			formatter = new SimpleDateFormat("HH:mm");
@@ -133,15 +158,15 @@ public class BoardServiceImpl implements BoardService {
 			pb.setTimeStart(stime);
 			pb.setTimeEnd(etime);
 			pb.setDescription(fdto.getDescription().get(i));
-			
+
 			plist.add(pb);
 		}
-		
+
 		boardMapper.insertBoard(board);
 		boardMapper.insertPlanBoard(plist, board.getArticleId());
 		boardMapper.registFileInfo(board);
 	}
-	
+
 	@Override
 	public FreeBoardDto selectFreeBoardId(int id) {
 		return boardMapper.selectFreeBoardId(id);
@@ -151,9 +176,9 @@ public class BoardServiceImpl implements BoardService {
 	public List<PlanBoardDto> selectPlanBoardId(int id) {
 		return boardMapper.selectPlanBoardId(id);
 	}
-	
+
 	@Override
 	public List<FileInfoDto> getPhotosByPostId(int postId) {
-        return boardMapper.getPhotosByPostId(postId);
-    }
+		return boardMapper.getPhotosByPostId(postId);
+	}
 }

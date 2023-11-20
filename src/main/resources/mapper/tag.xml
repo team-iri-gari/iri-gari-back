@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tag.model.mapper.TagMapper">
+
+	<resultMap type="TagDto" id="tag">
+		<result column="tag_id" property="id" />
+		<result column="tag_name" property="name" />
+	</resultMap>
+
+    <!-- 태그 조회 -->
+    <select id="selectTag" resultMap="tag" parameterType="string">
+        SELECT * FROM tags WHERE tag_name = #{name}
+    </select>
+
+    <!-- 태그 삽입 -->
+    <insert id="insertTag" parameterType="TagDto">
+        INSERT INTO tags (tag_name) VALUES (#{name})
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 해시태그 삽입 -->
+    <insert id="insertHashTag" parameterType="HashTagDto">
+        INSERT INTO hash_tag (article_id, tag_id) VALUES (#{articleId}, #{tagId})
+    </insert>
+
+    <!-- 해시태그 조회 -->
+    <select id="selectHashTag" resultType="TagDto">
+        SELECT t.tag_id, t.tag_name
+        FROM hash_tag ht
+        JOIN tags t ON ht.tag_id = t.tag_id
+        WHERE ht.article_id = #{articleId}
+    </select>
+
+    <!-- 해시태그 삭제 -->
+    <delete id="deleteHashTag">
+        DELETE FROM hash_tag 
+        WHERE article_id = #{articleId} AND tag_id = #{tagId}
+    </delete>
+
+</mapper>

@@ -78,6 +78,7 @@ public class BoardController {
 		ObjectMapper mapper = new ObjectMapper();
 		fb.setTagList(mapper.readValue(tagList, List.class));
 		
+		
 		if (files[0] != null && !files[0].isEmpty()) {
 	        String today = new SimpleDateFormat("yyMMdd").format(new Date());
 	        String bucketName = "iri-gari-image-server";
