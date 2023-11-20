@@ -6,4 +6,5 @@ import lombok.Data;
 public class TagDto {
 	int id;
 	String name;
+	int hit;
 }

@@ -8,36 +8,50 @@
 		<result column="tag_name" property="name" />
 	</resultMap>
 
-    <!-- 태그 조회 -->
-    <select id="selectTag" resultMap="tag" parameterType="string">
-        SELECT * FROM tags WHERE tag_name = #{name}
-    </select>
+	<!-- 태그 조회 -->
+	<select id="selectTag" resultMap="tag" parameterType="string">
+		SELECT *
+		FROM tags WHERE tag_name = #{name}
+	</select>
 
-    <!-- 태그 삽입 -->
-    <insert id="insertTag" parameterType="TagDto">
-        INSERT INTO tags (tag_name) VALUES (#{name})
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-    </insert>
+	<!-- 태그 삽입 -->
+	<insert id="insertTag" parameterType="TagDto">
+		INSERT INTO tags (tag_name) VALUES (#{name})
+		<selectKey keyProperty="id" resultType="int" order="AFTER">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	</insert>
 
-    <!-- 해시태그 삽입 -->
-    <insert id="insertHashTag" parameterType="HashTagDto">
-        INSERT INTO hash_tag (article_id, tag_id) VALUES (#{articleId}, #{tagId})
-    </insert>
+	<!-- 해시태그 삽입 -->
+	<insert id="insertHashTag" parameterType="HashTagDto">
+		INSERT INTO hash_tag
+		(article_id, tag_id) VALUES (#{articleId}, #{tagId})
+	</insert>
 
-    <!-- 해시태그 조회 -->
-    <select id="selectHashTag" resultType="TagDto">
-        SELECT t.tag_id, t.tag_name
-        FROM hash_tag ht
-        JOIN tags t ON ht.tag_id = t.tag_id
-        WHERE ht.article_id = #{articleId}
-    </select>
+	<!-- 해시태그 조회 -->
+	<select id="selectHashTag" resultType="TagDto">
+		SELECT t.tag_id,
+		t.tag_name
+		FROM hash_tag ht
+		JOIN tags t ON ht.tag_id = t.tag_id
+		WHERE
+		ht.article_id = #{articleId}
+	</select>
 
-    <!-- 해시태그 삭제 -->
-    <delete id="deleteHashTag">
-        DELETE FROM hash_tag 
-        WHERE article_id = #{articleId} AND tag_id = #{tagId}
-    </delete>
+	<!-- 해시태그 삭제 -->
+	<delete id="deleteHashTag">
+		DELETE FROM hash_tag
+		WHERE article_id = #{articleId}
+		AND tag_id = #{tagId}
+	</delete>
+
+	<!-- 해당하는 키워드와 일치하는 태그의 조회수 +1 -->
+	<update id="incrementTagHits">
+		UPDATE tags
+		SET hit = hit + 1
+		WHERE tag_name LIKE CONCAT('%', #{keyword}, '%')
+	</update>
+
 
 </mapper>

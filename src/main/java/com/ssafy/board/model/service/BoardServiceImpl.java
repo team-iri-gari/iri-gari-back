@@ -61,13 +61,14 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<?> searchBoard(String type, String keyword) {
 		String[] words = keyword.split(" ");
-		System.out.println(Arrays.toString(words));
 
-		if (type.equals("free")) {
+		for (String word : words)
+			tagMapper.incrementTagHits(word);
+	
+		if (type.equals("free"))
 			return boardMapper.searchFreeBoard(words);
-		} else if (type.equals("plan")) {
+		else if (type.equals("plan"))
 			return boardMapper.searchPlanBoard(words);
-		}
 		return null;
 	}
 
@@ -90,20 +91,20 @@ public class BoardServiceImpl implements BoardService {
 		List<String> tagNames = fbDto.getTagList();
 
 		for (String tagName : tagNames) {
-			
+
 			System.out.println(tagName);
 			TagDto tag = tagMapper.selectTag(tagName);
-			
-			if(tag == null) {
+
+			if (tag == null) {
 				tag = new TagDto();
 				tag.setName(tagName);
 				tagMapper.insertTag(tag);
 			}
-			
+
 			HashTagDto hashTagDto = new HashTagDto();
 			hashTagDto.setArticleId(board.getArticleId());
 			hashTagDto.setTagId(tag.getId());
-			
+
 			tagMapper.insertHashTag(hashTagDto);
 		}
 	}

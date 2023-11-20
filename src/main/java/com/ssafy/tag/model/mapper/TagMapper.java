@@ -21,4 +21,6 @@ public interface TagMapper {
 	void deleteHashTag(HashTagDto hashTagDto);
 
 	void insertTag(TagDto tagDto);
+	
+	void incrementTagHits(String word);
 }
