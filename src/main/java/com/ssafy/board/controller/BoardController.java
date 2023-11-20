@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.board.model.BoardDto;
 import com.ssafy.board.model.FileInfoDto;
 import com.ssafy.board.model.FormDto;
@@ -37,40 +38,45 @@ import com.ssafy.board.model.service.BoardService;
 @RestController
 @RequestMapping("/board")
 public class BoardController {
-	
+
 	private final BoardService boardService;
 
 	@Autowired
 	private AmazonS3 amazonS3Client;
-	
+
 	public BoardController(BoardService boardService) {
 		this.boardService = boardService;
 	}
-	
+
 	@GetMapping("{type}")
 	public ResponseEntity<List<?>> showBoardList(@PathVariable String type) {
 		return ResponseEntity.ok().body(boardService.selectBoardType(type));
 	}
-	 
+
 	@GetMapping("free/{id}")
 	public ResponseEntity<FreeBoardDto> showfreePost(@PathVariable int id) {
 		return ResponseEntity.ok().body(boardService.selectBoardId(id));
 	}
-	
+
 	@GetMapping("/photo/{id}")
-    public ResponseEntity<List<FileInfoDto>> getPhotos(@PathVariable int id) {
-        List<FileInfoDto> photos = boardService.getPhotosByPostId(id);
-        return ResponseEntity.ok().body(photos);
-    }
-	
+	public ResponseEntity<List<FileInfoDto>> getPhotos(@PathVariable int id) {
+		List<FileInfoDto> photos = boardService.getPhotosByPostId(id);
+		return ResponseEntity.ok().body(photos);
+	}
+
 	@GetMapping("search/{type}")
-	public ResponseEntity<List<?>> searchFbList(@PathVariable("type") String type, @RequestParam("keyword") String keyword) {
+	public ResponseEntity<List<?>> searchFbList(@PathVariable("type") String type,
+			@RequestParam("keyword") String keyword) {
 		return ResponseEntity.ok().body(boardService.searchBoard(type, keyword));
 	}
-	
+
 	@PostMapping("write/free")
-	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files) throws Exception {
-	    if (files[0] != null && !files[0].isEmpty()) {
+	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files, @RequestParam("tagList") String tagList) throws Exception {
+
+		ObjectMapper mapper = new ObjectMapper();
+		fb.setTagList(mapper.readValue(tagList, List.class));
+		
+		if (files[0] != null && !files[0].isEmpty()) {
 	        String today = new SimpleDateFormat("yyMMdd").format(new Date());
 	        String bucketName = "iri-gari-image-server";
 
@@ -97,9 +103,10 @@ public class BoardController {
 	    boardService.insertFreeBoard(fb);
 	    return ResponseEntity.ok("OK");
 	}
-	
+
 	@PostMapping(value = "write/plan", consumes = "multipart/form-data")
-	public void writePlanBoard (@ModelAttribute FormDto fdto, @RequestParam("name") String name, @RequestParam("title") String title, @RequestParam("upfile") MultipartFile[] files) throws Exception {
+	public void writePlanBoard(@ModelAttribute FormDto fdto, @RequestParam("name") String name,
+			@RequestParam("title") String title, @RequestParam("upfile") MultipartFile[] files) throws Exception {
 		BoardDto board = new BoardDto();
 		String realName = URLDecoder.decode(name, StandardCharsets.UTF_8.toString());
 		System.out.println(realName);

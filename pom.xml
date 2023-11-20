@@ -92,6 +92,13 @@
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.590</version>
 		</dependency>
+
+		<!-- Jackson 라이브러리 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.12.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -19,5 +19,4 @@ public interface BoardService {
 	
 	FreeBoardDto selectBoardId(int id);
 	List<FileInfoDto> getPhotosByPostId(int id);
-	
 }
