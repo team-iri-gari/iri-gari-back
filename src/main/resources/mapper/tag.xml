@@ -55,13 +55,11 @@
 	</update>
 
 	<!-- hit 값이 1 이상인 태그들을 hit 순으로 정렬해서 반환 -->
-	<select id="selectRecommendTags" resultType="TagDto">
+	<select id="selectRecommendTags" resultMap="tag">
 		SELECT tag_id, tag_name, hit
 		FROM tags
 		WHERE hit > 1
 		ORDER BY hit DESC
 	</select>
-
-
 
 </mapper>
