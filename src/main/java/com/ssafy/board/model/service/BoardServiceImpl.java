@@ -3,14 +3,10 @@ package com.ssafy.board.model.service;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -145,7 +141,7 @@ public class BoardServiceImpl implements BoardService {
 			pb.setImgSrc(today); // 해당 계획 카드의 이미지 경로 저장
 			pb.setImgId(saveFileName); // 해당 계획 카드의 이미지 업로드 아이디 저장
 			pb.setPlaceName(fdto.getPlaceName().get(i));
-			pb.setPlaceId(fdto.getPlaceId().get(i));
+			
 			String dateStr = fdto.getDate().get(i);
 			String stimeStr = fdto.getTimeStart().get(i);
 			String etimeStr = fdto.getTimeEnd().get(i);
@@ -155,10 +151,13 @@ public class BoardServiceImpl implements BoardService {
 			formatter = new SimpleDateFormat("HH:mm");
 			Time stime = new Time(formatter.parse(stimeStr).getTime());
 			Time etime = new Time(formatter.parse(etimeStr).getTime());
+			
 			pb.setDate(sqlDate);
 			pb.setTimeStart(stime);
 			pb.setTimeEnd(etime);
 			pb.setDescription(fdto.getDescription().get(i));
+			pb.setPlaceX(fdto.getPlaceX().get(i));
+			pb.setPlaceY(fdto.getPlaceY().get(i));
 
 			plist.add(pb);
 		}

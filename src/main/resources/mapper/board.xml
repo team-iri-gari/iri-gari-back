@@ -32,11 +32,12 @@
 		<result column="img_src" property="imgSrc"/>
 		<result column="img_id" property="imgId"/>
 		<result column="place_name" property="placeName"/>
-		<result column="place_id" property="placeId"/>
 		<result column="date" property="date"/>
 		<result column="timeStart" property="timeStart"/>
 		<result column="timeEnd" property="timeEnd"/>
 		<result column="description" property="description"/>
+		<result column="place_x" property="placeX"/>
+		<result column="place_y" property="placeY"/>
 	</resultMap>
 
 	<resultMap type="fileInfoDto" id="file">
@@ -61,7 +62,7 @@
 	</select>
 	
 	<select id="selectPlanBoardId" parameterType="int" resultMap="pb">
-		select article_id, plan_idx, img_src, img_id, place_name, place_id, date, timeStart, timeEnd, description
+		select article_id, plan_idx, img_src, img_id, place_name, date, timeStart, timeEnd, description, place_x, place_y
 		from plan_board
 		where article_id = #{id}
 	</select>
@@ -143,11 +144,12 @@
 		img_src,
 		img_id,
 		place_name,
-		place_id,
 		date,
 		timeStart,
 		timeEnd,
-		description
+		description,
+		place_x,
+		place_y
 		) values
 		<foreach collection="plist" item="plan" separator=",">
 			(#{articleId},
@@ -156,11 +158,12 @@
 			#{plan.imgSrc},
 			#{plan.imgId},
 			#{plan.placeName},
-			#{plan.placeId},
 			#{plan.date},
 			#{plan.timeStart},
 			#{plan.timeEnd},
-			#{plan.description})
+			#{plan.description},
+			#{plan.placeX},
+			#{plan.placeY})
 		</foreach>
 	</insert>
 
