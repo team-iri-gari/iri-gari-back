@@ -127,4 +127,14 @@ public class BoardController {
 		board.setBoardTypeId(2);
 		boardService.insertPlanBoard(board, fdto, files);
 	}
+	
+	@GetMapping("free/user/{name}")
+	public ResponseEntity<List<FreeBoardDto>> showUserFreePost(@PathVariable String name) {
+		return ResponseEntity.ok().body(boardService.selectUserFreeBoardName(name));
+	}
+	
+	@GetMapping("plan/user/{name}")
+	public ResponseEntity<List<PlanBoardDto>> showUserPlanPost(@PathVariable String name) {
+		return ResponseEntity.ok().body(boardService.selectUserPlanBoardName(name));
+	}
 }
