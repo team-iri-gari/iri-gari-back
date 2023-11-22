@@ -9,6 +9,7 @@ import lombok.Data;
 public class PlanBoardDto{
 	private int articleId;
 	private int planIdx;
+	private String img;
 	private String imgSrc;
 	private String imgId;
 	private String placeName;
