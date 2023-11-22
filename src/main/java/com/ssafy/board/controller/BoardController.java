@@ -54,7 +54,7 @@ public class BoardController {
 	public ResponseEntity<FreeBoardDto> showfreePost(@PathVariable int id) {
 		return ResponseEntity.ok().body(boardService.selectFreeBoardId(id));
 	}
-	
+
 	@GetMapping("plan/{id}")
 	public ResponseEntity<List<PlanBoardDto>> showplanPost(@PathVariable int id) {
 		return ResponseEntity.ok().body(boardService.selectPlanBoardId(id));
@@ -73,38 +73,47 @@ public class BoardController {
 	}
 
 	@PostMapping("write/free")
-	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files, @RequestParam("tagList") String tagList) throws Exception {
+	public ResponseEntity<String> writeFreeBoard(FreeBoardDto freeBoard,
+			@RequestParam(value = "upfile", required = false) MultipartFile[] files,
+			@RequestParam("tagList") String tagList) throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
-		fb.setTagList(mapper.readValue(tagList, List.class));
-		
-		
-		if (files[0] != null && !files[0].isEmpty()) {
-	        String today = new SimpleDateFormat("yyMMdd").format(new Date());
-	        String bucketName = "iri-gari-image-server";
+		freeBoard.setTagList(mapper.readValue(tagList, List.class));
 
-	        List<FileInfoDto> fileInfos = new ArrayList<FileInfoDto>();
-	        for (MultipartFile mfile : files) {
-	            FileInfoDto fileInfoDto = new FileInfoDto();
-	            String originalFileName = mfile.getOriginalFilename();
-	            if (originalFileName != null && !originalFileName.isEmpty()) {
-	                String saveFileName = UUID.randomUUID().toString() + originalFileName.substring(originalFileName.lastIndexOf('.'));
+		if (files != null && files.length > 0 && !files[0].isEmpty()) {
+			String today = new SimpleDateFormat("yyMMdd").format(new Date());
+			String bucketName = "iri-gari-image-server";
 
-	                ObjectMetadata metadata = new ObjectMetadata();
-	                metadata.setContentLength(mfile.getSize());
-	                amazonS3Client.putObject(new PutObjectRequest(bucketName, today + "/" + saveFileName, mfile.getInputStream(), metadata));
+			List<FileInfoDto> fileInfos = new ArrayList<FileInfoDto>();
+			for (MultipartFile mfile : files) {
+				FileInfoDto fileInfoDto = new FileInfoDto();
+				String originalFileName = mfile.getOriginalFilename();
+				if (originalFileName != null && !originalFileName.isEmpty()) {
+					String saveFileName = UUID.randomUUID().toString()
+							+ originalFileName.substring(originalFileName.lastIndexOf('.'));
 
-	                fileInfoDto.setSaveFolder(today);
-	                fileInfoDto.setOriginalFile(originalFileName);
-	                fileInfoDto.setSaveFile(saveFileName);
-	            }
-	            fileInfos.add(fileInfoDto);
-	        }
-	        fb.setFileInfos(fileInfos);
-	    }
-	    fb.setBoardTypeId(1);
-	    boardService.insertFreeBoard(fb);
-	    return ResponseEntity.ok("OK");
+					ObjectMetadata metadata = new ObjectMetadata();
+					metadata.setContentLength(mfile.getSize());
+					amazonS3Client.putObject(new PutObjectRequest(bucketName, today + "/" + saveFileName,
+							mfile.getInputStream(), metadata));
+
+					fileInfoDto.setSaveFolder(today);
+					fileInfoDto.setOriginalFile(originalFileName);
+					fileInfoDto.setSaveFile(saveFileName);
+				}
+				fileInfos.add(fileInfoDto);
+			}
+			freeBoard.setFileInfos(fileInfos);
+
+			System.out.println(today + "/" + freeBoard.getFileInfos().get(0).getSaveFile());
+
+			freeBoard.setImg(today + "/" + freeBoard.getFileInfos().get(0).getSaveFile());
+		}
+
+		// 나머지 로직
+		freeBoard.setBoardTypeId(1);
+		boardService.insertFreeBoard(freeBoard);
+		return ResponseEntity.ok("OK");
 	}
 
 	@PostMapping(value = "write/plan", consumes = "multipart/form-data")
@@ -117,5 +126,15 @@ public class BoardController {
 		board.setTitle(title);
 		board.setBoardTypeId(2);
 		boardService.insertPlanBoard(board, fdto, files);
+	}
+	
+	@GetMapping("free/user/{name}")
+	public ResponseEntity<List<FreeBoardDto>> showUserFreePost(@PathVariable String name) {
+		return ResponseEntity.ok().body(boardService.selectUserFreeBoardName(name));
+	}
+	
+	@GetMapping("plan/user/{name}")
+	public ResponseEntity<List<PlanBoardDto>> showUserPlanPost(@PathVariable String name) {
+		return ResponseEntity.ok().body(boardService.selectUserPlanBoardName(name));
 	}
 }

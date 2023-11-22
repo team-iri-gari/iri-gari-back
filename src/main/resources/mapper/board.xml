@@ -125,9 +125,9 @@
 	        SELECT LAST_INSERT_ID()
 	    </selectKey>
 		insert into board
-		(board_type_id, title, name)
+		(board_type_id, title, img, name)
 		values (#{boardTypeId},
-		#{title}, #{name})
+		#{title}, #{img}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
@@ -188,5 +188,25 @@
             VALUES (#{articleId}, #{tag})
         </foreach>
     </insert> -->
+    
+    <select id="selectUserFreeBoardName" resultMap="fb">
+		select b.article_id, b.title, b.img, b.name, f.board_type_id, f.content, b.reg_date
+		from board b
+		join free_board f
+		on b.article_id = f.article_id
+		where b.board_type_id = 1
+		and name = #{name}
+		order by b.article_id desc;
+	</select>
+	
+	<select id="selectUserPlanBoardName" resultMap="pb">
+		select *
+		from board b
+		join plan_board p
+		on b.article_id = p.article_id
+		where b.board_type_id = 2
+		and name = #{name}
+		order by b.article_id desc;
+	</select>
 
 </mapper>

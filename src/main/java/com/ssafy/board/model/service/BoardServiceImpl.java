@@ -75,9 +75,10 @@ public class BoardServiceImpl implements BoardService {
 		board.setBoardTypeId(1);
 		board.setName(fbDto.getName());
 		board.setTitle(fbDto.getTitle());
+		board.setImg(fbDto.getImg());
 		boardMapper.insertBoard(board);
 		fbDto.setArticleId(board.getArticleId());
-		boardMapper.insertFreeBoard(fbDto);
+		boardMapper.insertFreeBoard(fbDto); 
 		List<FileInfoDto> fileInfos = fbDto.getFileInfos();
 
 		if (fileInfos != null && !fileInfos.isEmpty()) {
@@ -169,7 +170,17 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public FreeBoardDto selectFreeBoardId(int id) {
-		return boardMapper.selectFreeBoardId(id);
+		FreeBoardDto board = boardMapper.selectFreeBoardId(id);
+		
+		List<TagDto> tagDtos = tagMapper.selectHashTag(id);
+		List<String> tags = new ArrayList<>();
+
+		for (TagDto tagDto : tagDtos)
+		    tags.add(tagDto.getName());
+		
+		board.setTagList(tags);
+		
+		return board;
 	}
 
 	@Override
@@ -180,5 +191,15 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<FileInfoDto> getPhotosByPostId(int postId) {
 		return boardMapper.getPhotosByPostId(postId);
+	}
+
+	@Override
+	public List<FreeBoardDto> selectUserFreeBoardName(String name) {
+		return boardMapper.selectUserFreeBoardName(name);
+	}
+
+	@Override
+	public List<PlanBoardDto> selectUserPlanBoardName(String name) {
+		return boardMapper.selectUserPlanBoardName(name);
 	}
 }
