@@ -79,6 +79,7 @@ public class BoardServiceImpl implements BoardService {
 		board.setBoardTypeId(1);
 		board.setName(fbDto.getName());
 		board.setTitle(fbDto.getTitle());
+		board.setImg(fbDto.getImg());
 		boardMapper.insertBoard(board);
 		fbDto.setArticleId(board.getArticleId());
 		boardMapper.insertFreeBoard(fbDto);
@@ -170,7 +171,17 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public FreeBoardDto selectFreeBoardId(int id) {
-		return boardMapper.selectFreeBoardId(id);
+		FreeBoardDto board = boardMapper.selectFreeBoardId(id);
+		
+		List<TagDto> tagDtos = tagMapper.selectHashTag(id);
+		List<String> tags = new ArrayList<>();
+
+		for (TagDto tagDto : tagDtos)
+		    tags.add(tagDto.getName());
+		
+		board.setTagList(tags);
+		
+		return board;
 	}
 
 	@Override

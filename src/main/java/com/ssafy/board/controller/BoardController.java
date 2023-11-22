@@ -73,10 +73,10 @@ public class BoardController {
 	}
 
 	@PostMapping("write/free")
-	public ResponseEntity<String> writeFreeBoard(FreeBoardDto fb, @RequestParam("upfile") MultipartFile[] files, @RequestParam("tagList") String tagList) throws Exception {
+	public ResponseEntity<String> writeFreeBoard(FreeBoardDto freeBoard, @RequestParam("upfile") MultipartFile[] files, @RequestParam("tagList") String tagList) throws Exception {
 
 		ObjectMapper mapper = new ObjectMapper();
-		fb.setTagList(mapper.readValue(tagList, List.class));
+		freeBoard.setTagList(mapper.readValue(tagList, List.class));
 		
 		
 		if (files[0] != null && !files[0].isEmpty()) {
@@ -100,10 +100,14 @@ public class BoardController {
 	            }
 	            fileInfos.add(fileInfoDto);
 	        }
-	        fb.setFileInfos(fileInfos);
+	        freeBoard.setFileInfos(fileInfos);
+	        
+	        System.out.println(today + "/" + freeBoard.getFileInfos().get(0).getSaveFile());
+	        
+	        freeBoard.setImg(today + "/" + freeBoard.getFileInfos().get(0).getSaveFile());
 	    }
-	    fb.setBoardTypeId(1);
-	    boardService.insertFreeBoard(fb);
+		freeBoard.setBoardTypeId(1);
+	    boardService.insertFreeBoard(freeBoard);
 	    return ResponseEntity.ok("OK");
 	}
 

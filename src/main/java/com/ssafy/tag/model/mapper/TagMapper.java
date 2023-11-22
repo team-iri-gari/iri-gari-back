@@ -17,7 +17,7 @@ public interface TagMapper {
 
 	void insertHashTag(HashTagDto hashTagDto);
 
-	List<TagDto> selectHashTag(String boardId);
+	List<TagDto> selectHashTag(int id);
 
 	void deleteHashTag(HashTagDto hashTagDto);
 

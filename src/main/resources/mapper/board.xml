@@ -124,9 +124,9 @@
 	        SELECT LAST_INSERT_ID()
 	    </selectKey>
 		insert into board
-		(board_type_id, title, name)
+		(board_type_id, title, img, name)
 		values (#{boardTypeId},
-		#{title}, #{name})
+		#{title}, #{img}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
