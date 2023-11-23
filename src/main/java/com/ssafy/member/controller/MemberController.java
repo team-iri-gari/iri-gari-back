@@ -54,6 +54,11 @@ public class MemberController {
 	public ResponseEntity<MemberDto> detailMember(@PathVariable String id) {
 		return ResponseEntity.ok(memberService.detailMember(id));
 	}
+	
+	@GetMapping("name/{name}")
+	public ResponseEntity<MemberDto> detailMemberByName(@PathVariable String name) {
+		return ResponseEntity.ok(memberService.detailMemberByName(name));
+	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteMember(@PathVariable String id) {
