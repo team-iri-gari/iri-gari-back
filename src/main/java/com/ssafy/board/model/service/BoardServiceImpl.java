@@ -3,14 +3,10 @@ package com.ssafy.board.model.service;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -166,6 +162,26 @@ public class BoardServiceImpl implements BoardService {
 		boardMapper.insertBoard(board);
 		boardMapper.insertPlanBoard(plist, board.getArticleId());
 		boardMapper.registFileInfo(board);
+		
+		List<String> tagNames = board.getTagList();
+
+		for (String tagName : tagNames) {
+
+			System.out.println(tagName);
+			TagDto tag = tagMapper.selectTag(tagName);
+
+			if (tag == null) {
+				tag = new TagDto();
+				tag.setName(tagName);
+				tagMapper.insertTag(tag);
+			}
+
+			HashTagDto hashTagDto = new HashTagDto();
+			hashTagDto.setArticleId(board.getArticleId());
+			hashTagDto.setTagId(tag.getId());
+
+			tagMapper.insertHashTag(hashTagDto);
+		}
 	}
 
 	@Override

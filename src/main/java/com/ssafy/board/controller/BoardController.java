@@ -109,8 +109,12 @@ public class BoardController {
 
 	@PostMapping(value = "write/plan", consumes = "multipart/form-data")
 	public void writePlanBoard(@ModelAttribute FormDto fdto, @RequestParam("name") String name,
-			@RequestParam("title") String title, @RequestParam("upfile") MultipartFile[] files) throws Exception {
+			@RequestParam("title") String title, @RequestParam("upfile") MultipartFile[] files, @RequestParam("tagList") String tagList) throws Exception {
 		BoardDto board = new BoardDto();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		board.setTagList(mapper.readValue(tagList, List.class));
+		
 		String realName = URLDecoder.decode(name, StandardCharsets.UTF_8.toString());
 		System.out.println(realName);
 		board.setName(realName);
