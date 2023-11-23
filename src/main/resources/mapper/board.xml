@@ -26,8 +26,8 @@
 		<result column="article_id" property="articleId" />
 		<!-- 
 		<result column="title" property="title" />
-		<result column="img" property="img" />
 		<result column="name" property="name" /> -->
+		<result column="img" property="img" />
 		<result column="plan_idx" property="planIdx"/>
 		<result column="img_src" property="imgSrc"/>
 		<result column="img_id" property="imgId"/>
@@ -200,7 +200,7 @@
 	</select>
 	
 	<select id="selectUserPlanBoardName" resultMap="pb">
-		select *
+		select b.article_id, b.title, b.img, b.name, p.board_type_id
 		from board b
 		join plan_board p
 		on b.article_id = p.article_id
