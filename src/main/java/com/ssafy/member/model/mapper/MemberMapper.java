@@ -20,5 +20,7 @@ public interface MemberMapper {
 	MemberDto selectMemberByDto(MemberDto member);
 
 	MemberDto selectMemberById(String id);
+
+	MemberDto selectMemberByName(String name);
 }
 

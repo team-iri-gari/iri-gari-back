@@ -13,5 +13,7 @@ public interface MemberService {
 	void deleteMember(String no);
 
 	void updateMember(MemberDto member);
+
+	MemberDto detailMemberByName(String name);
 	
 }

@@ -30,7 +30,7 @@
 	</insert>
 
 	<!-- 해시태그 조회 -->
-	<select id="selectHashTag" resultType="TagDto">
+	<select id="selectHashTag" resultMap="tag">
 		SELECT t.tag_id,
 		t.tag_name
 		FROM hash_tag ht

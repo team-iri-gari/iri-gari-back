@@ -75,9 +75,10 @@ public class BoardServiceImpl implements BoardService {
 		board.setBoardTypeId(1);
 		board.setName(fbDto.getName());
 		board.setTitle(fbDto.getTitle());
+		board.setImg(fbDto.getImg());
 		boardMapper.insertBoard(board);
 		fbDto.setArticleId(board.getArticleId());
-		boardMapper.insertFreeBoard(fbDto);
+		boardMapper.insertFreeBoard(fbDto); 
 		List<FileInfoDto> fileInfos = fbDto.getFileInfos();
 
 		if (fileInfos != null && !fileInfos.isEmpty()) {
@@ -141,7 +142,7 @@ public class BoardServiceImpl implements BoardService {
 			pb.setImgSrc(today); // 해당 계획 카드의 이미지 경로 저장
 			pb.setImgId(saveFileName); // 해당 계획 카드의 이미지 업로드 아이디 저장
 			pb.setPlaceName(fdto.getPlaceName().get(i));
-			pb.setPlaceId(fdto.getPlaceId().get(i));
+			
 			String dateStr = fdto.getDate().get(i);
 			String stimeStr = fdto.getTimeStart().get(i);
 			String etimeStr = fdto.getTimeEnd().get(i);
@@ -151,10 +152,13 @@ public class BoardServiceImpl implements BoardService {
 			formatter = new SimpleDateFormat("HH:mm");
 			Time stime = new Time(formatter.parse(stimeStr).getTime());
 			Time etime = new Time(formatter.parse(etimeStr).getTime());
+			
 			pb.setDate(sqlDate);
 			pb.setTimeStart(stime);
 			pb.setTimeEnd(etime);
 			pb.setDescription(fdto.getDescription().get(i));
+			pb.setPlaceX(fdto.getPlaceX().get(i));
+			pb.setPlaceY(fdto.getPlaceY().get(i));
 
 			plist.add(pb);
 		}
@@ -186,7 +190,17 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public FreeBoardDto selectFreeBoardId(int id) {
-		return boardMapper.selectFreeBoardId(id);
+		FreeBoardDto board = boardMapper.selectFreeBoardId(id);
+		
+		List<TagDto> tagDtos = tagMapper.selectHashTag(id);
+		List<String> tags = new ArrayList<>();
+
+		for (TagDto tagDto : tagDtos)
+		    tags.add(tagDto.getName());
+		
+		board.setTagList(tags);
+		
+		return board;
 	}
 
 	@Override
@@ -197,5 +211,15 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<FileInfoDto> getPhotosByPostId(int postId) {
 		return boardMapper.getPhotosByPostId(postId);
+	}
+
+	@Override
+	public List<FreeBoardDto> selectUserFreeBoardName(String name) {
+		return boardMapper.selectUserFreeBoardName(name);
+	}
+
+	@Override
+	public List<PlanBoardDto> selectUserPlanBoardName(String name) {
+		return boardMapper.selectUserPlanBoardName(name);
 	}
 }

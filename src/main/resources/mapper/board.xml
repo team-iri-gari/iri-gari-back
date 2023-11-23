@@ -26,17 +26,18 @@
 		<result column="article_id" property="articleId" />
 		<!-- 
 		<result column="title" property="title" />
-		<result column="img" property="img" />
 		<result column="name" property="name" /> -->
+		<result column="img" property="img" />
 		<result column="plan_idx" property="planIdx"/>
 		<result column="img_src" property="imgSrc"/>
 		<result column="img_id" property="imgId"/>
 		<result column="place_name" property="placeName"/>
-		<result column="place_id" property="placeId"/>
 		<result column="date" property="date"/>
 		<result column="timeStart" property="timeStart"/>
 		<result column="timeEnd" property="timeEnd"/>
 		<result column="description" property="description"/>
+		<result column="place_x" property="placeX"/>
+		<result column="place_y" property="placeY"/>
 	</resultMap>
 
 	<resultMap type="fileInfoDto" id="file">
@@ -61,7 +62,7 @@
 	</select>
 	
 	<select id="selectPlanBoardId" parameterType="int" resultMap="pb">
-		select article_id, plan_idx, img_src, img_id, place_name, place_id, date, timeStart, timeEnd, description
+		select article_id, plan_idx, img_src, img_id, place_name, date, timeStart, timeEnd, description, place_x, place_y
 		from plan_board
 		where article_id = #{id}
 	</select>
@@ -124,9 +125,9 @@
 	        SELECT LAST_INSERT_ID()
 	    </selectKey>
 		insert into board
-		(board_type_id, title, name)
+		(board_type_id, title, img, name)
 		values (#{boardTypeId},
-		#{title}, #{name})
+		#{title}, #{img}, #{name})
 	</insert>
 
 	<insert id="insertFreeBoard" parameterType="freeBoardDto">
@@ -143,11 +144,12 @@
 		img_src,
 		img_id,
 		place_name,
-		place_id,
 		date,
 		timeStart,
 		timeEnd,
-		description
+		description,
+		place_x,
+		place_y
 		) values
 		<foreach collection="plist" item="plan" separator=",">
 			(#{articleId},
@@ -156,11 +158,12 @@
 			#{plan.imgSrc},
 			#{plan.imgId},
 			#{plan.placeName},
-			#{plan.placeId},
 			#{plan.date},
 			#{plan.timeStart},
 			#{plan.timeEnd},
-			#{plan.description})
+			#{plan.description},
+			#{plan.placeX},
+			#{plan.placeY})
 		</foreach>
 	</insert>
 
@@ -185,5 +188,25 @@
             VALUES (#{articleId}, #{tag})
         </foreach>
     </insert> -->
+    
+    <select id="selectUserFreeBoardName" resultMap="fb">
+		select b.article_id, b.title, b.img, b.name, f.board_type_id, f.content, b.reg_date
+		from board b
+		join free_board f
+		on b.article_id = f.article_id
+		where b.board_type_id = 1
+		and name = #{name}
+		order by b.article_id desc;
+	</select>
+	
+	<select id="selectUserPlanBoardName" resultMap="pb">
+		select b.article_id, b.title, b.img, b.name, p.board_type_id
+		from board b
+		join plan_board p
+		on b.article_id = p.article_id
+		where b.board_type_id = 2
+		and name = #{name}
+		order by b.article_id desc;
+	</select>
 
 </mapper>

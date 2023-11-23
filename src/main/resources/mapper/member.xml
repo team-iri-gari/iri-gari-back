@@ -43,5 +43,11 @@
 		SELECT id, name, email FROM members
 		WHERE id = #{id}
 	</select>
+	
+	<select id="selectMemberByName" parameterType="string"
+		resultType="com.ssafy.member.model.MemberDto">
+		SELECT id, name, email FROM members
+		WHERE name = #{name}
+	</select>
 
 </mapper>

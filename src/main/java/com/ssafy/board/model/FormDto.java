@@ -10,9 +10,10 @@ public class FormDto {
 	private String title;
 	private List<Integer> placeIdx;
 	private List<String> placeName;
-	private List<String> placeId;
 	private List<String> date;
 	private List<String> timeStart;
 	private List<String> timeEnd;
 	private List<String> description;
+	private List<String> placeX;
+	private List<String> placeY;
 }
