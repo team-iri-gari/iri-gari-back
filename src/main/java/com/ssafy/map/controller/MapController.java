@@ -28,6 +28,8 @@ public class MapController {
 	public String getPath(@RequestBody UrlDto target) throws Exception {
 		System.out.println(target.getUrl());
 		String urlPath = target.getUrl();
+		urlPath = urlPath.replace(",", "%2C");
+		urlPath = urlPath.replace("|", "%7C");
 		
 		URI uri = new URI(urlPath);
 		
