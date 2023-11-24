@@ -199,14 +199,12 @@
 		order by b.article_id desc;
 	</select>
 	
-	<select id="selectUserPlanBoardName" resultMap="pb">
-		select b.article_id, b.title, b.img, b.name, p.board_type_id
-		from board b
-		join plan_board p
-		on b.article_id = p.article_id
-		where b.board_type_id = 2
+	<select id="selectUserPlanBoardName" resultMap="board">
+		select article_id, title, img, name, board_type_id, reg_date
+		from board
+		where board_type_id = 2
 		and name = #{name}
-		order by b.article_id desc;
+		order by article_id desc;
 	</select>
 
 </mapper>

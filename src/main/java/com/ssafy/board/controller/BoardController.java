@@ -134,7 +134,7 @@ public class BoardController {
 	}
 	
 	@GetMapping("plan/user/{name}")
-	public ResponseEntity<List<PlanBoardDto>> showUserPlanPost(@PathVariable String name) {
+	public ResponseEntity<List<BoardDto>> showUserPlanPost(@PathVariable String name) {
 		return ResponseEntity.ok().body(boardService.selectUserPlanBoardName(name));
 	}
 }

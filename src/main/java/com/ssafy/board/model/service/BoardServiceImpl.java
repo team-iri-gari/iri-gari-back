@@ -202,7 +202,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<PlanBoardDto> selectUserPlanBoardName(String name) {
+	public List<BoardDto> selectUserPlanBoardName(String name) {
 		return boardMapper.selectUserPlanBoardName(name);
 	}
 }

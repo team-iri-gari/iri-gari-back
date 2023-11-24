@@ -23,5 +23,5 @@ public interface BoardService {
 	List<FileInfoDto> getPhotosByPostId(int id);
 	
 	List<FreeBoardDto> selectUserFreeBoardName(String name);
-	List<PlanBoardDto> selectUserPlanBoardName(String name);
+	List<BoardDto> selectUserPlanBoardName(String name);
 }
