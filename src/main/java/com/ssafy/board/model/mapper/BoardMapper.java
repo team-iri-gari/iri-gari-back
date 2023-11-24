@@ -27,5 +27,5 @@ public interface BoardMapper {
 	List<FileInfoDto> getPhotosByPostId(int postId);
 	
 	List<FreeBoardDto> selectUserFreeBoardName(String name);
-	List<PlanBoardDto> selectUserPlanBoardName(String name);
+	List<BoardDto> selectUserPlanBoardName(String name);
 }

@@ -162,6 +162,9 @@ public class BoardServiceImpl implements BoardService {
 
 			plist.add(pb);
 		}
+		
+		board.setImg(flist.get(0).getSaveFolder() + "/" + flist.get(0).getSaveFile());
+		System.out.println(flist.get(0).getSaveFolder() + "/" + flist.get(0).getSaveFile());
 
 		boardMapper.insertBoard(board);
 		boardMapper.insertPlanBoard(plist, board.getArticleId());
@@ -219,7 +222,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<PlanBoardDto> selectUserPlanBoardName(String name) {
+	public List<BoardDto> selectUserPlanBoardName(String name) {
 		return boardMapper.selectUserPlanBoardName(name);
 	}
 }
